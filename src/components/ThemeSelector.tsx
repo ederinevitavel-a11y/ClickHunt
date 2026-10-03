@@ -19,24 +19,24 @@ export const ThemeSelectorModal: React.FC<ThemeSelectorProps> = ({ isOpen, onClo
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-2 sm:p-4">
       <div
-        className="relative w-full max-w-lg bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden my-8"
+        className="relative w-full max-w-lg bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden my-auto max-h-[92dvh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Top Dynamic Gradient */}
         <div
-          className="h-1.5 w-full transition-all duration-300"
+          className="h-1.5 w-full transition-all duration-300 shrink-0"
           style={{
             background: `linear-gradient(90deg, ${themeConfig.primaryColor}, ${themeConfig.secondaryColor}, #a855f7)`,
           }}
         />
 
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800 bg-slate-950/60">
-          <div className="flex items-center gap-3">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 sm:py-4 border-b border-slate-800 bg-slate-950/90 shrink-0">
+          <div className="flex items-center gap-2.5 sm:gap-3">
             <div
-              className="p-2.5 rounded-xl border transition-all duration-300"
+              className="p-2 sm:p-2.5 rounded-xl border transition-all duration-300 shrink-0"
               style={{
                 backgroundColor: `${themeConfig.primaryColor}20`,
                 borderColor: `${themeConfig.primaryColor}40`,
@@ -47,15 +47,15 @@ export const ThemeSelectorModal: React.FC<ThemeSelectorProps> = ({ isOpen, onClo
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="font-gamer font-bold text-lg sm:text-xl text-slate-100 uppercase tracking-wide">
-                  Combinações de Cores Gamer
+                <h2 className="font-gamer font-bold text-base sm:text-xl text-slate-100 uppercase tracking-wide">
+                  Cores da Interface
                 </h2>
                 <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">
                   10 Temas
                 </span>
               </div>
-              <p className="text-xs text-slate-400 font-sans">
-                Selecione o esquema de cores e iluminação neon da interface
+              <p className="text-[11px] sm:text-xs text-slate-400 font-sans">
+                Selecione o esquema de cores neon da interface
               </p>
             </div>
           </div>
@@ -64,28 +64,28 @@ export const ThemeSelectorModal: React.FC<ThemeSelectorProps> = ({ isOpen, onClo
               playClickSound();
               onClose();
             }}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800 transition cursor-pointer"
+            className="p-2 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800 transition cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Active Theme Spotlight Preview */}
-        <div className="px-6 py-3 bg-slate-950/40 border-b border-slate-800/80 flex items-center justify-between text-xs">
+        <div className="px-4 sm:px-6 py-2.5 bg-slate-950/40 border-b border-slate-800/80 flex items-center justify-between text-xs shrink-0">
           <div className="flex items-center gap-2">
             <Sparkles className="w-4 h-4" style={{ color: themeConfig.primaryColor }} />
-            <span className="text-slate-400 font-gamer uppercase tracking-wide">Tema Atual:</span>
+            <span className="text-slate-400 font-gamer uppercase tracking-wide text-[11px]">Atual:</span>
             <span className="font-gamer font-bold text-slate-100 uppercase" style={{ color: themeConfig.primaryColor }}>
               {themeConfig.name}
             </span>
           </div>
-          <span className="text-[11px] text-slate-400 font-sans hidden sm:inline">
-            Clique em qualquer opção para trocar na hora
+          <span className="text-[11px] text-slate-400 font-sans hidden xs:inline">
+            Troca instantânea ao clicar
           </span>
         </div>
 
         {/* List of Themes */}
-        <div className="p-5 space-y-2.5 max-h-[60vh] overflow-y-auto font-sans">
+        <div className="p-4 sm:p-5 space-y-2.5 flex-1 overflow-y-auto font-sans">
           {Object.values(THEMES).map((th) => {
             const isSelected = theme === th.id;
             return (

@@ -76,6 +76,7 @@
     background-color: #060911;
     color: #e2e8f0;
     min-height: 100vh;
+    min-height: 100dvh;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     background-image: 
       radial-gradient(ellipse 80% 50% at 50% -20%, var(--theme-glow), transparent 70%),
@@ -85,9 +86,9 @@
       linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
     background-size: 100% 100%, 100% 100%, 100% 100%, 48px 48px, 48px 48px;
     background-position: 0 0, 0 0, 0 0, -1px -1px, -1px -1px;
-    background-attachment: fixed;
     -webkit-font-smoothing: antialiased;
     transition: background-color 0.3s ease;
+    overflow-x: hidden;
   }
 
   /* Custom dark gaming scrollbar */

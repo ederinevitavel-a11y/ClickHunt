@@ -53,25 +53,25 @@ export const InvitesHubModal: React.FC<InvitesHubModalProps> = ({ isOpen, onClos
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-2 sm:p-4">
       <div
-        className="relative w-full max-w-xl bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden my-8"
+        className="relative w-full max-w-xl bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden my-auto max-h-[92dvh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Top Accent Line */}
-        <div className="h-1 w-full bg-gradient-to-r from-amber-500 via-yellow-400 to-cyan-500" />
+        <div className="h-1 w-full bg-gradient-to-r from-amber-500 via-yellow-400 to-cyan-500 shrink-0" />
 
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800 bg-slate-950/60">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 sm:py-4 border-b border-slate-800 bg-slate-950/90 shrink-0">
+          <div className="flex items-center gap-2.5 sm:gap-3">
+            <div className="p-2 sm:p-2.5 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 shrink-0">
               <Bell className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="font-gamer font-bold text-lg sm:text-xl text-slate-100 uppercase tracking-wide">
+              <h2 className="font-gamer font-bold text-base sm:text-xl text-slate-100 uppercase tracking-wide">
                 Central de Convites de Party
               </h2>
-              <p className="text-xs text-slate-400 font-sans">Gerencie propostas recebidas e enviadas para caçadas</p>
+              <p className="text-[11px] sm:text-xs text-slate-400 font-sans">Gerencie propostas para caçadas</p>
             </div>
           </div>
           <button
@@ -79,20 +79,20 @@ export const InvitesHubModal: React.FC<InvitesHubModalProps> = ({ isOpen, onClos
               playClickSound();
               onClose();
             }}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800 transition cursor-pointer"
+            className="p-2 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800 transition cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Tabs */}
-        <div className="flex border-b border-slate-800 bg-slate-950/40 px-6 font-gamer">
+        <div className="flex border-b border-slate-800 bg-slate-950/40 px-4 sm:px-6 font-gamer shrink-0">
           <button
             onClick={() => {
               playClickSound();
               setActiveTab('received');
             }}
-            className={`flex items-center gap-2 py-3 px-4 text-xs font-bold border-b-2 transition cursor-pointer uppercase tracking-wider ${
+            className={`flex items-center gap-2 py-3 px-3 sm:px-4 text-xs font-bold border-b-2 transition cursor-pointer uppercase tracking-wider ${
               activeTab === 'received'
                 ? 'border-amber-400 text-amber-300 drop-shadow-[0_2px_8px_rgba(245,158,11,0.4)]'
                 : 'border-transparent text-slate-400 hover:text-slate-200'
@@ -112,7 +112,7 @@ export const InvitesHubModal: React.FC<InvitesHubModalProps> = ({ isOpen, onClos
               playClickSound();
               setActiveTab('sent');
             }}
-            className={`flex items-center gap-2 py-3 px-4 text-xs font-bold border-b-2 transition cursor-pointer uppercase tracking-wider ${
+            className={`flex items-center gap-2 py-3 px-3 sm:px-4 text-xs font-bold border-b-2 transition cursor-pointer uppercase tracking-wider ${
               activeTab === 'sent'
                 ? 'border-amber-400 text-amber-300 drop-shadow-[0_2px_8px_rgba(245,158,11,0.4)]'
                 : 'border-transparent text-slate-400 hover:text-slate-200'
@@ -125,7 +125,7 @@ export const InvitesHubModal: React.FC<InvitesHubModalProps> = ({ isOpen, onClos
         </div>
 
         {/* Content */}
-        <div className="p-6 max-h-[60vh] overflow-y-auto space-y-3 font-sans">
+        <div className="p-4 sm:p-6 flex-1 overflow-y-auto space-y-3 font-sans">
           {activeTab === 'received' ? (
             receivedInvites.length === 0 ? (
               <div className="text-center py-10 text-slate-400 space-y-2">

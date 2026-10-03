@@ -87,25 +87,25 @@ export const InviteModal: React.FC<InviteModalProps> = ({
     : null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-2 sm:p-4">
       <div
-        className="relative w-full max-w-lg bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden my-8"
+        className="relative w-full max-w-lg bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden my-auto max-h-[92dvh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Top Accent Line */}
-        <div className="h-1 w-full bg-gradient-to-r from-amber-500 via-yellow-400 to-cyan-500" />
+        <div className="h-1 w-full bg-gradient-to-r from-amber-500 via-yellow-400 to-cyan-500 shrink-0" />
 
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800 bg-slate-950/60">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 sm:py-4 border-b border-slate-800 bg-slate-950/90 shrink-0">
+          <div className="flex items-center gap-2.5 sm:gap-3">
+            <div className="p-2 sm:p-2.5 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 shrink-0">
               <Swords className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="font-gamer font-bold text-lg sm:text-xl text-slate-100 uppercase tracking-wide">
-                Convidar para Party de Hunt
+              <h2 className="font-gamer font-bold text-base sm:text-xl text-slate-100 uppercase tracking-wide">
+                Convidar para Party
               </h2>
-              <p className="text-xs text-slate-400 font-sans">Proponha uma hunt para o jogador</p>
+              <p className="text-[11px] sm:text-xs text-slate-400 font-sans">Proponha uma hunt para o jogador</p>
             </div>
           </div>
           <button
@@ -113,17 +113,17 @@ export const InviteModal: React.FC<InviteModalProps> = ({
               playClickSound();
               onClose();
             }}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800 transition cursor-pointer"
+            className="p-2 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800 transition cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Target Character Preview Card */}
-        <div className="p-5 bg-slate-950/60 border-b border-slate-800 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3.5">
+        <div className="p-3.5 sm:p-5 bg-slate-950/60 border-b border-slate-800 flex items-center justify-between gap-3 shrink-0">
+          <div className="flex items-center gap-3 min-w-0">
             <div
-              className="w-12 h-12 rounded-xl flex items-center justify-center font-gamer font-bold text-sm border shadow-md"
+              className="w-11 h-11 rounded-xl flex items-center justify-center font-gamer font-bold text-sm border shadow-md shrink-0"
               style={{
                 borderColor: `${targetMeta?.hexColor || '#f59e0b'}60`,
                 backgroundColor: `${targetMeta?.hexColor || '#f59e0b'}15`,
@@ -132,20 +132,20 @@ export const InviteModal: React.FC<InviteModalProps> = ({
             >
               {targetMeta?.badge}
             </div>
-            <div>
+            <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <span className="font-gamer font-bold text-slate-100 text-base">{targetCharacter.characterName}</span>
-                <span className="font-mono text-[10px] font-bold bg-slate-900 text-cyan-300 px-1.5 py-0.5 rounded border border-cyan-500/40 uppercase">
+                <span className="font-gamer font-bold text-slate-100 text-sm sm:text-base truncate">{targetCharacter.characterName}</span>
+                <span className="font-mono text-[10px] font-bold bg-slate-900 text-cyan-300 px-1.5 py-0.5 rounded border border-cyan-500/40 uppercase shrink-0">
                   Kalibra
                 </span>
               </div>
-              <div className="text-xs text-slate-400 mt-0.5 font-sans">
+              <div className="text-xs text-slate-400 mt-0.5 font-sans truncate">
                 {targetCharacter.vocation} • <span className="text-amber-400 font-bold font-mono">Lv.{targetCharacter.level}</span>
               </div>
             </div>
           </div>
 
-          <div className="text-right text-[11px] text-slate-400 font-gamer">
+          <div className="text-right text-[10px] sm:text-[11px] text-slate-400 font-gamer shrink-0">
             <div className="uppercase">Share XP:</div>
             <div className="font-mono text-amber-300 font-bold text-xs">
               {targetCharacter.minShareLevel} - {targetCharacter.maxShareLevel}
@@ -154,13 +154,14 @@ export const InviteModal: React.FC<InviteModalProps> = ({
         </div>
 
         {/* Form Body */}
-        <form onSubmit={handleSend} className="p-6 space-y-4 font-sans">
-          {errorMsg && (
-            <div className="p-3 bg-rose-950/40 border border-rose-500/50 rounded-xl text-rose-300 text-xs flex items-center gap-2 font-gamer">
-              <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
-              <span>{errorMsg}</span>
-            </div>
-          )}
+        <form onSubmit={handleSend} className="flex-1 overflow-y-auto flex flex-col">
+          <div className="p-4 sm:p-6 space-y-4 font-sans flex-1">
+            {errorMsg && (
+              <div className="p-3 bg-rose-950/40 border border-rose-500/50 rounded-xl text-rose-300 text-xs flex items-center gap-2 font-gamer">
+                <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
+                <span>{errorMsg}</span>
+              </div>
+            )}
 
           {successMsg && (
             <div className="p-3 bg-emerald-950/40 border border-emerald-500/50 rounded-xl text-emerald-300 text-xs font-gamer font-bold">
@@ -249,9 +250,10 @@ export const InviteModal: React.FC<InviteModalProps> = ({
               className="w-full px-3.5 py-2 bg-slate-950 border border-slate-700 rounded-xl text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-500 resize-none shadow-inner"
             />
           </div>
+          </div>
 
-          {/* Footer Actions */}
-          <div className="pt-3 border-t border-slate-800 flex items-center justify-between gap-3">
+          {/* Sticky Footer Actions */}
+          <div className="p-3.5 sm:p-4 border-t border-slate-800 bg-slate-950/95 flex flex-wrap items-center justify-between gap-3 shrink-0">
             {whatsappHref ? (
               <a
                 href={whatsappHref}
@@ -260,21 +262,21 @@ export const InviteModal: React.FC<InviteModalProps> = ({
                 onClick={() => playClickSound()}
                 className="flex items-center gap-1.5 px-3 py-2 bg-emerald-950/40 hover:bg-emerald-900/50 text-emerald-300 border border-emerald-500/40 rounded-xl text-xs font-gamer font-semibold transition cursor-pointer"
               >
-                <span>Falar no WhatsApp</span>
+                <span>WhatsApp</span>
                 <ExternalLink className="w-3.5 h-3.5" />
               </a>
             ) : (
               <div />
             )}
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 ml-auto">
               <button
                 type="button"
                 onClick={() => {
                   playClickSound();
                   onClose();
                 }}
-                className="gamer-btn-secondary px-4 py-2 rounded-xl text-xs cursor-pointer"
+                className="gamer-btn-secondary px-4 py-2.5 rounded-xl text-xs cursor-pointer"
               >
                 Cancelar
               </button>

@@ -15,13 +15,17 @@ import { InvitesHubModal } from './components/InvitesHubModal';
 import { ShareCalculatorModal } from './components/ShareCalculatorModal';
 import { PartyBuilderModal } from './components/PartyBuilderModal';
 import { ThemeSelectorModal } from './components/ThemeSelector';
+import { MobileBottomNav } from './components/MobileBottomNav';
 import { Character } from './types';
 import { Shield, Coins } from 'lucide-react';
 
 const MainApp: React.FC = () => {
   const { user, signInWithGoogle, loading: authLoading } = useAuth();
-  const { createCharacter, updateCharacter } = usePartyData();
+  const { createCharacter, updateCharacter, isAdmin } = usePartyData();
   const { themeConfig } = useTheme();
+
+  // Navigation tab state
+  const [activeTab, setActiveTab] = useState<'suggestions' | 'all' | 'parties' | 'admin'>('suggestions');
 
   // Modals state
   const [isCharModalOpen, setIsCharModalOpen] = useState(false);
@@ -114,18 +118,30 @@ const MainApp: React.FC = () => {
       />
 
       {/* Main Content Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8 pb-20 sm:pb-8">
         <Dashboard
           onOpenCharModal={handleOpenNewCharModal}
           onEditChar={handleEditChar}
           onOpenCalculator={() => setIsCalculatorOpen(true)}
           onOpenPartyBuilder={handleOpenPartyBuilder}
           onInviteChar={handleInviteChar}
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
         />
       </main>
 
+      {/* Mobile Bottom Navigation (Persistent on mobile devices) */}
+      <MobileBottomNav
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        onOpenPartyBuilder={handleOpenPartyBuilder}
+        onOpenCalculator={() => setIsCalculatorOpen(true)}
+        onOpenCharModal={handleOpenNewCharModal}
+        isAdmin={isAdmin}
+      />
+
       {/* Footer */}
-      <footer className="border-t border-slate-800/80 bg-slate-950/80 backdrop-blur-md py-6 mt-auto">
+      <footer className="border-t border-slate-800/80 bg-slate-950/80 backdrop-blur-md py-6 mt-auto hidden sm:block">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
           <div className="flex items-center gap-2">
             <span

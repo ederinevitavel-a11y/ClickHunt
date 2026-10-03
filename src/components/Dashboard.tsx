@@ -28,6 +28,8 @@ interface DashboardProps {
   onOpenCalculator: () => void;
   onOpenPartyBuilder: () => void;
   onInviteChar: (character: Character) => void;
+  activeTab?: 'suggestions' | 'all' | 'parties' | 'admin';
+  onTabChange?: (tab: 'suggestions' | 'all' | 'parties' | 'admin') => void;
 }
 
 export const Dashboard: React.FC<DashboardProps> = ({
@@ -36,6 +38,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
   onOpenCalculator,
   onOpenPartyBuilder,
   onInviteChar,
+  activeTab: controlledActiveTab,
+  onTabChange: controlledOnTabChange,
 }) => {
   const { user, signInWithGoogle } = useAuth();
   const { themeConfig } = useTheme();
@@ -48,12 +52,18 @@ export const Dashboard: React.FC<DashboardProps> = ({
     isAdmin,
   } = usePartyData();
 
-  const [activeTab, setActiveTab] = useState<'suggestions' | 'all' | 'parties' | 'admin'>('suggestions');
+  const [internalActiveTab, setInternalActiveTab] = useState<'suggestions' | 'all' | 'parties' | 'admin'>('suggestions');
+  const activeTab = controlledActiveTab !== undefined ? controlledActiveTab : internalActiveTab;
+
   const [seedingLoading, setSeedingLoading] = useState(false);
 
   const handleTabChange = (tab: 'suggestions' | 'all' | 'parties' | 'admin') => {
     playClickSound();
-    setActiveTab(tab);
+    if (controlledOnTabChange) {
+      controlledOnTabChange(tab);
+    } else {
+      setInternalActiveTab(tab);
+    }
   };
 
   const handleSeedDemos = async () => {
@@ -81,8 +91,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
       {/* Supporter Notice ("Doe Tibia Coins para o char Eder") */}
       <SupporterBanner />
 
-      {/* Main Modern Gamer Tabs */}
-      <div className="flex border-b border-slate-800 gap-1 sm:gap-2 font-gamer overflow-x-auto whitespace-nowrap scrollbar-none">
+      {/* Main Modern Gamer Tabs (Hidden on mobile, shown on tablet/desktop) */}
+      <div className="hidden sm:flex border-b border-slate-800 gap-1 sm:gap-2 font-gamer overflow-x-auto whitespace-nowrap scrollbar-none">
         {/* Tab 1: Sugestões Inteligentes */}
         <button
           onClick={() => handleTabChange('suggestions')}

@@ -228,24 +228,24 @@ export const CharacterModal: React.FC<CharacterModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-2 sm:p-4">
       <div
-        className="relative w-full max-w-2xl bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden my-8"
+        className="relative w-full max-w-2xl bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden my-auto max-h-[92dvh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Top Accent Line */}
         <div
-          className="h-1.5 w-full"
+          className="h-1.5 w-full shrink-0"
           style={{
             background: `linear-gradient(90deg, ${themeConfig.primaryColor}, ${themeConfig.secondaryColor}, #a855f7)`,
           }}
         />
 
-        {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800 bg-slate-950/60">
-          <div className="flex items-center gap-3">
+        {/* Header (Sticky) */}
+        <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 sm:py-4 border-b border-slate-800 bg-slate-950/90 shrink-0">
+          <div className="flex items-center gap-2.5 sm:gap-3">
             <div
-              className="p-2.5 rounded-xl border"
+              className="p-2 sm:p-2.5 rounded-xl border shrink-0"
               style={{
                 backgroundColor: `${themeConfig.primaryColor}20`,
                 borderColor: `${themeConfig.primaryColor}40`,
@@ -255,11 +255,11 @@ export const CharacterModal: React.FC<CharacterModalProps> = ({
               <Shield className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="font-gamer font-bold text-lg sm:text-xl text-slate-100 uppercase tracking-wide">
-                {initialData ? 'Editar Personagem' : 'Cadastrar Personagem no Radar'}
+              <h2 className="font-gamer font-bold text-base sm:text-xl text-slate-100 uppercase tracking-wide">
+                {initialData ? 'Editar Personagem' : 'Cadastrar Personagem'}
               </h2>
-              <p className="text-xs text-slate-400 font-sans">
-                Preencha os dados de combate para encontrar sua PT perfeita
+              <p className="text-[11px] sm:text-xs text-slate-400 font-sans truncate">
+                Preencha os dados para encontrar sua PT perfeita
               </p>
             </div>
           </div>
@@ -268,20 +268,21 @@ export const CharacterModal: React.FC<CharacterModalProps> = ({
               playClickSound();
               onClose();
             }}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800 transition cursor-pointer"
+            className="p-2 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800 transition cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Form Body */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-5 max-h-[80vh] overflow-y-auto font-sans">
-          {errorMsg && (
-            <div className="p-3 bg-rose-950/40 border border-rose-500/50 rounded-xl text-rose-300 text-xs flex items-center gap-2 font-gamer">
-              <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
-              <span>{errorMsg}</span>
-            </div>
-          )}
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto flex flex-col">
+          <div className="p-4 sm:p-6 space-y-5 font-sans flex-1">
+            {errorMsg && (
+              <div className="p-3 bg-rose-950/40 border border-rose-500/50 rounded-xl text-rose-300 text-xs flex items-center gap-2 font-gamer">
+                <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
+                <span>{errorMsg}</span>
+              </div>
+            )}
 
           {/* Row 1: Nome do Personagem & Mundo */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -739,16 +740,17 @@ export const CharacterModal: React.FC<CharacterModalProps> = ({
               </label>
             </div>
           </div>
+          </div>
 
-          {/* Submit Buttons */}
-          <div className="pt-4 border-t border-slate-800 flex items-center justify-end gap-3">
+          {/* Sticky Submit Buttons Footer */}
+          <div className="p-3.5 sm:p-4 border-t border-slate-800 bg-slate-950/95 flex items-center justify-end gap-3 shrink-0">
             <button
               type="button"
               onClick={() => {
                 playClickSound();
                 onClose();
               }}
-              className="gamer-btn-secondary px-4 py-2 rounded-xl text-xs cursor-pointer"
+              className="gamer-btn-secondary px-4 py-2.5 rounded-xl text-xs cursor-pointer"
             >
               Cancelar
             </button>

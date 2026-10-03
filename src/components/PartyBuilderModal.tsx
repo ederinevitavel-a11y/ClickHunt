@@ -67,25 +67,25 @@ export const PartyBuilderModal: React.FC<PartyBuilderModalProps> = ({ isOpen, on
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-2 sm:p-4">
       <div
-        className="relative w-full max-w-lg bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden my-8"
+        className="relative w-full max-w-lg bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden my-auto max-h-[92dvh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Top Accent Line */}
-        <div className="h-1 w-full bg-gradient-to-r from-amber-500 via-yellow-400 to-cyan-500" />
+        <div className="h-1 w-full bg-gradient-to-r from-amber-500 via-yellow-400 to-cyan-500 shrink-0" />
 
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800 bg-slate-950/60">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 sm:py-4 border-b border-slate-800 bg-slate-950/90 shrink-0">
+          <div className="flex items-center gap-2.5 sm:gap-3">
+            <div className="p-2 sm:p-2.5 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 shrink-0">
               <Users className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="font-gamer font-bold text-lg sm:text-xl text-slate-100 uppercase tracking-wide">
+              <h2 className="font-gamer font-bold text-base sm:text-xl text-slate-100 uppercase tracking-wide">
                 Criar Nova Party de Hunt
               </h2>
-              <p className="text-xs text-slate-400 font-sans">Monte um grupo de 4 ou 5 membros para caçada</p>
+              <p className="text-[11px] sm:text-xs text-slate-400 font-sans">Monte um grupo de 4 ou 5 membros para caçada</p>
             </div>
           </div>
           <button
@@ -93,7 +93,7 @@ export const PartyBuilderModal: React.FC<PartyBuilderModalProps> = ({ isOpen, on
               playClickSound();
               onClose();
             }}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800 transition cursor-pointer"
+            className="p-2 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800 transition cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -101,18 +101,19 @@ export const PartyBuilderModal: React.FC<PartyBuilderModalProps> = ({ isOpen, on
 
         {/* Selected Leader Info */}
         {selectedCharacter && (
-          <div className="px-6 py-3 bg-slate-950/60 border-b border-slate-800 flex items-center justify-between text-xs font-gamer">
-            <div className="flex items-center gap-2">
-              <span className="text-slate-400 uppercase">Líder da Party:</span>
-              <span className="font-bold text-amber-400">{selectedCharacter.characterName}</span>
-              <span className="text-slate-500">({selectedCharacter.vocation} Lv.{selectedCharacter.level})</span>
+          <div className="px-4 sm:px-6 py-2.5 bg-slate-950/60 border-b border-slate-800 flex items-center justify-between text-xs font-gamer shrink-0">
+            <div className="flex items-center gap-2 truncate">
+              <span className="text-slate-400 uppercase">Líder:</span>
+              <span className="font-bold text-amber-400 truncate">{selectedCharacter.characterName}</span>
+              <span className="text-slate-500 hidden xs:inline">({selectedCharacter.vocation} Lv.{selectedCharacter.level})</span>
             </div>
-            <span className="text-cyan-400 font-mono font-bold uppercase">Kalibra</span>
+            <span className="text-cyan-400 font-mono font-bold uppercase shrink-0">Kalibra</span>
           </div>
         )}
 
         {/* Form Body */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-4 font-sans">
+        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto flex flex-col">
+          <div className="p-4 sm:p-6 space-y-4 font-sans flex-1">
           {errorMsg && (
             <div className="p-3 bg-rose-950/40 border border-rose-500/50 rounded-xl text-rose-300 text-xs flex items-center gap-2 font-gamer">
               <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
@@ -266,16 +267,17 @@ export const PartyBuilderModal: React.FC<PartyBuilderModalProps> = ({ isOpen, on
               className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-xs text-slate-100 focus:outline-none focus:border-amber-500 resize-none shadow-inner"
             />
           </div>
+          </div>
 
-          {/* Actions */}
-          <div className="pt-3 border-t border-slate-800 flex items-center justify-end gap-3">
+          {/* Sticky Actions Footer */}
+          <div className="p-3.5 sm:p-4 border-t border-slate-800 bg-slate-950/95 flex items-center justify-end gap-3 shrink-0">
             <button
               type="button"
               onClick={() => {
                 playClickSound();
                 onClose();
               }}
-              className="gamer-btn-secondary px-4 py-2 rounded-xl text-xs cursor-pointer"
+              className="gamer-btn-secondary px-4 py-2.5 rounded-xl text-xs cursor-pointer"
             >
               Cancelar
             </button>
