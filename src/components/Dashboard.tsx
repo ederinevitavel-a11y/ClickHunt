@@ -156,6 +156,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
         <SmartSuggestions
           onInvite={onInviteChar}
           onOpenCharModal={onOpenCharModal}
+          onDelete={deleteCharacter}
         />
       )}
 

@@ -25,6 +25,7 @@ export interface Character {
   whatsappNumber: string;
   createdAt: string;
   updatedAt: string;
+  approved: boolean;
 }
 
 export interface PartyInvite {

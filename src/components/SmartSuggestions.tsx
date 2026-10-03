@@ -19,11 +19,13 @@ import { playClickSound } from '../lib/soundEffects';
 interface SmartSuggestionsProps {
   onInvite: (character: Character) => void;
   onOpenCharModal: () => void;
+  onDelete?: (charId: string) => void;
 }
 
 export const SmartSuggestions: React.FC<SmartSuggestionsProps> = ({
   onInvite,
   onOpenCharModal,
+  onDelete,
 }) => {
   const { characters, selectedCharacter, myCharacters } = usePartyData();
 
@@ -156,6 +158,7 @@ export const SmartSuggestions: React.FC<SmartSuggestionsProps> = ({
                 character={character}
                 matchScore={match}
                 onInvite={onInvite}
+                onDelete={onDelete}
               />
             ))}
           </div>
@@ -186,6 +189,7 @@ export const SmartSuggestions: React.FC<SmartSuggestionsProps> = ({
                 character={character}
                 matchScore={match}
                 onInvite={onInvite}
+                onDelete={onDelete}
               />
             ))}
           </div>

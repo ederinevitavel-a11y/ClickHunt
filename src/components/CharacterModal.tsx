@@ -23,7 +23,7 @@ import { useTheme } from '../context/ThemeContext';
 interface CharacterModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (data: Omit<Character, 'id' | 'ownerId' | 'ownerEmail' | 'minShareLevel' | 'maxShareLevel' | 'createdAt' | 'updatedAt'>) => Promise<void>;
+  onSave: (data: Omit<Character, 'id' | 'ownerId' | 'ownerEmail' | 'minShareLevel' | 'maxShareLevel' | 'createdAt' | 'updatedAt' | 'approved'>) => Promise<void>;
   initialData?: Character | null;
 }
 

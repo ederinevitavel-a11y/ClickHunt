@@ -74,6 +74,10 @@
         "updatedAt": {
           "type": "string",
           "description": "Timestamp when character was last updated."
+        },
+        "approved": {
+          "type": "boolean",
+          "description": "True if the character is approved by the admin."
         }
       },
       "required": [
@@ -92,7 +96,37 @@
         "interestedInProposals",
         "whatsappNumber",
         "createdAt",
-        "updatedAt"
+        "updatedAt",
+        "approved"
+      ]
+    },
+    "ApprovedUser": {
+      "title": "ApprovedUser",
+      "description": "Players that have been verified by the administrator and can manage characters without further approval.",
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "description": "Verified Google email address of the player."
+        },
+        "uid": {
+          "type": "string",
+          "description": "User UID."
+        },
+        "approvedAt": {
+          "type": "string",
+          "description": "Approval timestamp."
+        },
+        "approvedBy": {
+          "type": "string",
+          "description": "The admin email who approved them."
+        }
+      },
+      "required": [
+        "email",
+        "uid",
+        "approvedAt",
+        "approvedBy"
       ]
     },
     "PartyInvite": {
@@ -295,6 +329,10 @@
     "/characters/{characterId}": {
       "schema": "Character",
       "description": "Public character profiles registered by players for party matchmaking."
+    },
+    "/approved_users/{userId}": {
+      "schema": "ApprovedUser",
+      "description": "Verified players who can bypass character approval."
     },
     "/invites/{inviteId}": {
       "schema": "PartyInvite",

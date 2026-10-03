@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { Character, Vocation } from '../types';
 import { usePartyData } from '../context/PartyDataContext';
+import { useAuth } from '../context/AuthContext';
 import { CharacterCard } from './CharacterCard';
 import { VOCATION_META, isLevelInShareRange } from '../lib/tibiaMath';
 import { playClickSound } from '../lib/soundEffects';
@@ -29,6 +30,7 @@ export const RosterView: React.FC<RosterViewProps> = ({
   onOpenCharModal,
 }) => {
   const { characters, selectedCharacter } = usePartyData();
+  const { user } = useAuth();
 
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedVocation, setSelectedVocation] = useState<Vocation | 'All'>('All');
@@ -40,6 +42,12 @@ export const RosterView: React.FC<RosterViewProps> = ({
   // Filtered & Sorted Characters
   const filteredCharacters = useMemo(() => {
     return characters.filter((char) => {
+      // 0. Only show approved characters OR if it belongs to the current user (so they see their pending approval char!)
+      const isOwner = user?.uid === char.ownerId;
+      if (!char.approved && !isOwner) {
+        return false;
+      }
+
       // 1. Search term
       if (searchTerm.trim()) {
         const term = searchTerm.toLowerCase();

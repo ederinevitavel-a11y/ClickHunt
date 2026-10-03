@@ -28,7 +28,11 @@ interface PartyDataContextType {
   sentInvites: PartyInvite[];
   organizedParties: any[];
   isAdmin: boolean;
-  createCharacter: (data: Omit<Character, 'id' | 'ownerId' | 'ownerEmail' | 'minShareLevel' | 'maxShareLevel' | 'createdAt' | 'updatedAt'>) => Promise<string>;
+  isApprovedUser: boolean;
+  approvedUsers: any[];
+  approveUserAndCharacter: (charId: string) => Promise<void>;
+  revokeUserApproval: (userId: string) => Promise<void>;
+  createCharacter: (data: Omit<Character, 'id' | 'ownerId' | 'ownerEmail' | 'minShareLevel' | 'maxShareLevel' | 'createdAt' | 'updatedAt' | 'approved'>) => Promise<string>;
   updateCharacter: (id: string, data: Partial<Character>) => Promise<void>;
   deleteCharacter: (id: string) => Promise<void>;
   sendPartyInvite: (targetChar: Character, huntTarget: string, scheduledTime: string, message?: string) => Promise<void>;
@@ -56,6 +60,7 @@ export const PartyDataProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [invites, setInvites] = useState<PartyInvite[]>([]);
   const [organizedParties, setOrganizedParties] = useState<any[]>([]);
   const [loadingData, setLoadingData] = useState<boolean>(true);
+  const [approvedUsers, setApprovedUsers] = useState<any[]>([]);
 
   const isAdmin = user?.email === 'ederinevitavel@gmail.com';
 
@@ -159,11 +164,28 @@ export const PartyDataProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       setOrganizedParties([]);
     }
 
+    // 5. Listen to Approved Users
+    const appUsersPath = 'approved_users';
+    const unsubscribeAppUsers = onSnapshot(
+      collection(db, appUsersPath),
+      (snapshot) => {
+        const loaded: any[] = [];
+        snapshot.forEach((docSnap) => {
+          loaded.push({ id: docSnap.id, ...docSnap.data() });
+        });
+        setApprovedUsers(loaded);
+      },
+      (error) => {
+        handleFirestoreError(error, OperationType.LIST, appUsersPath);
+      }
+    );
+
     return () => {
       unsubscribeChars();
       unsubscribeParties();
       unsubscribeInvites();
       unsubscribeOrganized();
+      unsubscribeAppUsers();
     };
   }, [user]);
 
@@ -185,9 +207,49 @@ export const PartyDataProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const receivedInvites = invites.filter((inv) => inv.toUserId === user?.uid);
   const sentInvites = invites.filter((inv) => inv.fromUserId === user?.uid);
 
+  // User Verification and Status helpers
+  const isApprovedUser = React.useMemo(() => {
+    if (!user) return false;
+    if (user.email === 'ederinevitavel@gmail.com') return true;
+    return approvedUsers.some(
+      (u) => u.uid === user.uid || u.email?.toLowerCase() === user.email?.toLowerCase()
+    );
+  }, [user, approvedUsers]);
+
+  const approveUserAndCharacter = async (charId: string) => {
+    if (!user || !isAdmin) return;
+    const char = characters.find((c) => c.id === charId);
+    if (!char) return;
+
+    const now = new Date().toISOString();
+    const ownerEmail = char.ownerEmail || 'unknown@clickhunt.com';
+    const ownerId = char.ownerId || `user_${Date.now()}`;
+
+    // 1. Approve the character
+    await updateDoc(doc(db, 'characters', charId), {
+      approved: true,
+      updatedAt: now,
+      ownerEmail: ownerEmail // ensure ownerEmail is written if it was missing in old doc
+    });
+
+    // 2. Add user to approved_users
+    const appUserPayload = {
+      email: ownerEmail,
+      uid: ownerId,
+      approvedAt: now,
+      approvedBy: user.email || ''
+    };
+    await setDoc(doc(db, 'approved_users', ownerId), appUserPayload);
+  };
+
+  const revokeUserApproval = async (userId: string) => {
+    if (!user || !isAdmin) return;
+    await deleteDoc(doc(db, 'approved_users', userId));
+  };
+
   // Character Actions
   const createCharacter = async (
-    data: Omit<Character, 'id' | 'ownerId' | 'ownerEmail' | 'minShareLevel' | 'maxShareLevel' | 'createdAt' | 'updatedAt'>
+    data: Omit<Character, 'id' | 'ownerId' | 'ownerEmail' | 'minShareLevel' | 'maxShareLevel' | 'createdAt' | 'updatedAt' | 'approved'>
   ): Promise<string> => {
     if (!user) throw new Error('É necessário estar autenticado com Google.');
     const charId = `char_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
@@ -203,6 +265,7 @@ export const PartyDataProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       maxShareLevel,
       createdAt: now,
       updatedAt: now,
+      approved: isApprovedUser,
     };
 
     const path = `characters/${charId}`;
@@ -506,6 +569,10 @@ export const PartyDataProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         sentInvites,
         organizedParties,
         isAdmin,
+        isApprovedUser,
+        approvedUsers,
+        approveUserAndCharacter,
+        revokeUserApproval,
         createCharacter,
         updateCharacter,
         deleteCharacter,

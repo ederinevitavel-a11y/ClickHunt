@@ -39,6 +39,7 @@ export const CharacterCard: React.FC<CharacterCardProps> = ({
   const [isConfirmingDelete, setIsConfirmingDelete] = React.useState(false);
 
   const isOwner = user?.uid === character.ownerId;
+  const isAdmin = user?.email === 'ederinevitavel@gmail.com';
   const meta = VOCATION_META[character.vocation] || VOCATION_META.Knight;
 
   // Real-time share check against current selected char
@@ -94,6 +95,11 @@ export const CharacterCard: React.FC<CharacterCardProps> = ({
                 <span className="font-mono text-[11px] font-bold text-cyan-300 bg-cyan-950/40 px-2 py-0.5 rounded border border-cyan-500/40 uppercase">
                   Kalibra
                 </span>
+                {!character.approved && (
+                  <span className="text-[10px] font-gamer font-bold text-amber-500 bg-amber-950/40 border border-amber-500/40 px-2 py-0.5 rounded animate-pulse" title="Este personagem está aguardando aprovação do administrador.">
+                    Pendente
+                  </span>
+                )}
               </div>
 
               {/* Vocation and Role Tag */}
@@ -417,6 +423,29 @@ export const CharacterCard: React.FC<CharacterCardProps> = ({
                 >
                   <MessageSquare className="w-4 h-4" />
                 </a>
+              )}
+
+              {/* Quick Admin Delete Button */}
+              {isAdmin && (
+                <button
+                  onClick={async () => {
+                    playClickSound();
+                    if (confirm(`ADMIN: Deseja realmente excluir permanentemente o personagem "${character.characterName}" do banco de dados?`)) {
+                      try {
+                        if (onDelete) {
+                          await onDelete(character.id);
+                        }
+                      } catch (err: any) {
+                        console.error(err);
+                        alert(`Erro ao excluir: ${err.message || err}`);
+                      }
+                    }
+                  }}
+                  className="p-2.5 bg-rose-950/50 hover:bg-rose-600 border border-rose-500/30 text-rose-400 hover:text-white rounded-xl transition cursor-pointer shrink-0"
+                  title="ADMIN: Excluir Personagem da Base"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
               )}
             </div>
           )}
