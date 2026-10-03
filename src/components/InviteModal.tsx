@@ -12,7 +12,7 @@ import {
 import { Character } from '../types';
 import { useAuth } from '../context/AuthContext';
 import { usePartyData } from '../context/PartyDataContext';
-import { buildWhatsAppLink, POPULAR_HUNTS, VOCATION_META } from '../lib/tibiaMath';
+import { buildWhatsAppLink, buildDirectWhatsAppLink, POPULAR_HUNTS, VOCATION_META } from '../lib/tibiaMath';
 import { playClickSound, playTransmissionSound } from '../lib/soundEffects';
 
 interface InviteModalProps {
@@ -83,7 +83,7 @@ export const InviteModal: React.FC<InviteModalProps> = ({
         huntTarget
       )
     : targetCharacter.whatsappNumber
-    ? `https://wa.me/${targetCharacter.whatsappNumber.replace(/\D/g, '')}`
+    ? buildDirectWhatsAppLink(targetCharacter.whatsappNumber)
     : null;
 
   return (

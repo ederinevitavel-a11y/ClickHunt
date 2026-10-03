@@ -15,7 +15,7 @@ import {
 import { Party, PartyMember } from '../types';
 import { useAuth } from '../context/AuthContext';
 import { usePartyData } from '../context/PartyDataContext';
-import { buildWhatsAppLink, VOCATION_META, isLevelInShareRange } from '../lib/tibiaMath';
+import { buildWhatsAppLink, buildDirectWhatsAppLink, VOCATION_META, isLevelInShareRange } from '../lib/tibiaMath';
 import { playClickSound, playChimeSound } from '../lib/soundEffects';
 import confetti from 'canvas-confetti';
 
@@ -78,7 +78,7 @@ export const PartyCard: React.FC<PartyCardProps> = ({ party }) => {
         party.huntTarget
       )
     : leaderWhatsapp
-    ? `https://wa.me/${leaderWhatsapp.replace(/\D/g, '')}`
+    ? buildDirectWhatsAppLink(leaderWhatsapp)
     : null;
 
   return (

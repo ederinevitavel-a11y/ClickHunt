@@ -16,7 +16,7 @@ import {
 import { Character, MatchScore } from '../types';
 import { useAuth } from '../context/AuthContext';
 import { usePartyData } from '../context/PartyDataContext';
-import { VOCATION_META, buildWhatsAppLink, isLevelInShareRange } from '../lib/tibiaMath';
+import { VOCATION_META, buildWhatsAppLink, buildDirectWhatsAppLink, isLevelInShareRange } from '../lib/tibiaMath';
 import { playClickSound, playTransmissionSound } from '../lib/soundEffects';
 
 interface CharacterCardProps {
@@ -59,7 +59,7 @@ export const CharacterCard: React.FC<CharacterCardProps> = ({
         character.huntsInterest?.[0]
       )
     : character.whatsappNumber
-    ? `https://wa.me/${character.whatsappNumber.replace(/\D/g, '')}`
+    ? buildDirectWhatsAppLink(character.whatsappNumber)
     : '#';
 
   const handleInviteClick = () => {

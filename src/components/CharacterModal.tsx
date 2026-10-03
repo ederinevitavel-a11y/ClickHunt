@@ -16,7 +16,7 @@ import {
   FileText,
 } from 'lucide-react';
 import { Character, Vocation, CharacterHunt } from '../types';
-import { calculateShareRange, POPULAR_HUNTS, POPULAR_WORLDS, VOCATION_META } from '../lib/tibiaMath';
+import { calculateShareRange, POPULAR_HUNTS, POPULAR_WORLDS, VOCATION_META, formatPhoneMask, sanitizeWhatsAppNumber } from '../lib/tibiaMath';
 import { playClickSound, playChimeSound } from '../lib/soundEffects';
 import { useTheme } from '../context/ThemeContext';
 
@@ -705,19 +705,28 @@ export const CharacterModal: React.FC<CharacterModalProps> = ({
           {/* WhatsApp & Proposals */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block font-gamer text-xs font-bold text-slate-300 mb-1.5 flex items-center gap-1.5 uppercase tracking-wide">
-                <MessageCircle className="w-3.5 h-3.5 text-emerald-400" />
-                Número de WhatsApp (DDD + Número)
+              <label className="block font-gamer text-xs font-bold text-slate-300 mb-1.5 flex items-center justify-between uppercase tracking-wide">
+                <span className="flex items-center gap-1.5">
+                  <MessageCircle className="w-3.5 h-3.5 text-emerald-400" />
+                  WhatsApp (DDD + Número)
+                </span>
+                {whatsappNumber && (
+                  <span className="text-[10px] text-emerald-400 font-mono font-bold">
+                    +55 {sanitizeWhatsAppNumber(whatsappNumber).replace(/^55/, '')}
+                  </span>
+                )}
               </label>
-              <input
-                type="text"
-                placeholder="Ex: +55 11 99999-9999"
-                value={whatsappNumber}
-                onChange={(e) => setWhatsappNumber(e.target.value)}
-                className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-500 transition shadow-inner font-mono"
-              />
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Ex: (35) 99245-1052 ou (11) 99999-9999"
+                  value={whatsappNumber}
+                  onChange={(e) => setWhatsappNumber(formatPhoneMask(e.target.value))}
+                  className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-500 transition shadow-inner font-mono"
+                />
+              </div>
               <span className="text-[10px] text-slate-500 mt-1 block">
-                Permite contato direto com líderes e membros da PT pelo WhatsApp.
+                Insira seu DDD + telefone (o código internacional <strong>+55 do Brasil</strong> é adicionado automaticamente).
               </span>
             </div>
 

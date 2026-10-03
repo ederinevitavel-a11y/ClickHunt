@@ -1,4 +1,17 @@
-import { Character, MatchScore, Vocation } from '../types';
+import { Character, CharacterHunt, MatchScore, Vocation } from '../types';
+
+/**
+ * Safely extracts the hunt name string whether the input is a string or CharacterHunt object.
+ */
+export function getHuntName(hunt: string | CharacterHunt | any): string {
+  if (!hunt) return '';
+  if (typeof hunt === 'string') return hunt.trim();
+  if (typeof hunt === 'object') {
+    if (typeof hunt.name === 'string') return hunt.name.trim();
+    if (typeof hunt.huntName === 'string') return hunt.huntName.trim();
+  }
+  return String(hunt).trim();
+}
 
 /**
  * Tibia Official Experience Share Formula:
@@ -62,6 +75,7 @@ export function isLevelInShareRange(myLevel: number, targetLevel: number): boole
  * Helper to parse a time string and return an approximate [startHour, endHour] range (0-48).
  */
 export function parseHourRange(periodStr: string): [number, number] | null {
+  if (!periodStr || typeof periodStr !== 'string') return null;
   const lower = periodStr.toLowerCase();
   if (lower.includes('manhã') || lower.includes('manha')) return [6, 12];
   if (lower.includes('tarde')) return [12, 18];
@@ -87,7 +101,7 @@ export function parseHourRange(periodStr: string): [number, number] | null {
  * Checks whether two availability periods overlap in time.
  */
 export function doPeriodsOverlap(p1: string, p2: string): boolean {
-  if (!p1 || !p2) return false;
+  if (!p1 || !p2 || typeof p1 !== 'string' || typeof p2 !== 'string') return false;
   if (p1.trim().toLowerCase() === p2.trim().toLowerCase()) return true;
   if (p1.toLowerCase().includes(p2.toLowerCase()) || p2.toLowerCase().includes(p1.toLowerCase())) return true;
 
@@ -112,10 +126,10 @@ export function calculateSynergy(myChar: Character, otherChar: Character): Match
   let score = 0;
 
   // 1. World Check (Missclick PTs is dedicated to Kalibra)
-  const isKalibra =
-    myChar.world?.toLowerCase() === 'kalibra' && otherChar.world?.toLowerCase() === 'kalibra';
-  const sameWorld =
-    isKalibra || myChar.world.trim().toLowerCase() === otherChar.world.trim().toLowerCase();
+  const myWorld = String(myChar.world || 'Kalibra').toLowerCase().trim();
+  const otherWorld = String(otherChar.world || 'Kalibra').toLowerCase().trim();
+  const isKalibra = myWorld === 'kalibra' && otherWorld === 'kalibra';
+  const sameWorld = isKalibra || myWorld === otherWorld;
   if (sameWorld) {
     score += 25;
     details.push(`Servidor Kalibra`);
@@ -145,7 +159,7 @@ export function calculateSynergy(myChar: Character, otherChar: Character): Match
   const matchedPeriods: string[] = [];
   (myChar.availablePeriods || []).forEach((p1) => {
     (otherChar.availablePeriods || []).forEach((p2) => {
-      if (doPeriodsOverlap(p1, p2)) {
+      if (typeof p1 === 'string' && typeof p2 === 'string' && doPeriodsOverlap(p1, p2)) {
         const label = p1 === p2 ? p1 : `${p1} ≈ ${p2}`;
         if (!matchedPeriods.includes(label)) {
           matchedPeriods.push(label);
@@ -168,11 +182,16 @@ export function calculateSynergy(myChar: Character, otherChar: Character): Match
     details.push(`Dias em comum: ${dayOverlap.slice(0, 3).join(', ')}${dayOverlap.length > 3 ? '...' : ''}`);
   }
 
-  // 6. Hunt Target Overlap
-  const huntOverlap = (myChar.huntsInterest || []).filter((h) =>
-    (otherChar.huntsInterest || []).some(
-      (oh) => oh.toLowerCase().includes(h.toLowerCase()) || h.toLowerCase().includes(oh.toLowerCase())
-    )
+  // 6. Hunt Target Overlap (Safely supports strings and CharacterHunt objects)
+  const myHunts = (myChar.huntsInterest || []).map(getHuntName).filter(Boolean);
+  const otherHunts = (otherChar.huntsInterest || []).map(getHuntName).filter(Boolean);
+
+  const huntOverlap = myHunts.filter((h) =>
+    otherHunts.some((oh) => {
+      const hLower = h.toLowerCase();
+      const ohLower = oh.toLowerCase();
+      return ohLower.includes(hLower) || hLower.includes(ohLower);
+    })
   );
   if (huntOverlap.length > 0) {
     score += 10;
@@ -191,6 +210,56 @@ export function calculateSynergy(myChar: Character, otherChar: Character): Match
   };
 }
 
+/**
+ * Sanitizes and normalizes phone numbers for WhatsApp API / wa.me URLs.
+ * Automatically handles Brazilian phone numbers by adding country code 55 if omitted.
+ */
+export function sanitizeWhatsAppNumber(phone: string): string {
+  if (!phone) return '';
+  let clean = phone.replace(/\D/g, '');
+  
+  // Remove leading 0 if entered (e.g. 035992451052 -> 35992451052)
+  if (clean.startsWith('0')) {
+    clean = clean.substring(1);
+  }
+
+  // Brazilian mobile numbers usually have 10 digits (DDD + 8 digits) or 11 digits (DDD + 9 digits)
+  // E.g. 35992451052 (11 digits) -> add 55 -> 5535992451052
+  // E.g. 11987654321 (11 digits) -> add 55 -> 5511987654321
+  if ((clean.length === 10 || clean.length === 11) && !clean.startsWith('55')) {
+    clean = `55${clean}`;
+  }
+
+  return clean;
+}
+
+/**
+ * Visual formatter mask for phone inputs (Brazilian format: (DD) 9XXXX-XXXX)
+ */
+export function formatPhoneMask(value: string): string {
+  let clean = value.replace(/\D/g, '');
+
+  // Strip international prefix if typing
+  if (clean.startsWith('55') && clean.length > 11) {
+    clean = clean.substring(2);
+  }
+
+  if (clean.length > 11) {
+    clean = clean.substring(0, 11);
+  }
+
+  if (clean.length <= 2) {
+    return clean ? `(${clean}` : '';
+  }
+  if (clean.length <= 6) {
+    return `(${clean.slice(0, 2)}) ${clean.slice(2)}`;
+  }
+  if (clean.length <= 10) {
+    return `(${clean.slice(0, 2)}) ${clean.slice(2, 6)}-${clean.slice(6)}`;
+  }
+  return `(${clean.slice(0, 2)}) ${clean.slice(2, 7)}-${clean.slice(7, 11)}`;
+}
+
 export function buildWhatsAppLink(
   phoneNumber: string,
   myCharName: string,
@@ -199,11 +268,21 @@ export function buildWhatsAppLink(
   targetCharName: string,
   huntTarget?: string
 ): string {
-  const cleanPhone = phoneNumber.replace(/\D/g, '');
-  const message = `Hail ${targetCharName}! Vi seu perfil no Missclick PTs. Sou o ${myCharName} (Lv ${myLevel} ${myVoc}). Tem interesse em fechar PT${
+  const cleanPhone = sanitizeWhatsAppNumber(phoneNumber);
+  if (!cleanPhone) return '#';
+  const message = `Hail ${targetCharName}! Vi seu perfil no ClickHunt Kalibra. Sou o ${myCharName} (Lv ${myLevel} ${myVoc}). Tem interesse em fechar PT${
     huntTarget ? ` para ${huntTarget}` : ''
   }?`;
   return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
+}
+
+export function buildDirectWhatsAppLink(phoneNumber: string, customMessage?: string): string {
+  const cleanPhone = sanitizeWhatsAppNumber(phoneNumber);
+  if (!cleanPhone) return '#';
+  if (customMessage) {
+    return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(customMessage)}`;
+  }
+  return `https://wa.me/${cleanPhone}`;
 }
 
 export const DEFAULT_WORLD = 'Kalibra';

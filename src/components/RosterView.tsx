@@ -11,7 +11,7 @@ import { Character, Vocation } from '../types';
 import { usePartyData } from '../context/PartyDataContext';
 import { useAuth } from '../context/AuthContext';
 import { CharacterCard } from './CharacterCard';
-import { VOCATION_META, isLevelInShareRange } from '../lib/tibiaMath';
+import { VOCATION_META, isLevelInShareRange, getHuntName } from '../lib/tibiaMath';
 import { playClickSound } from '../lib/soundEffects';
 
 interface RosterViewProps {
@@ -51,10 +51,10 @@ export const RosterView: React.FC<RosterViewProps> = ({
       // 1. Search term
       if (searchTerm.trim()) {
         const term = searchTerm.toLowerCase();
-        const matchesName = char.characterName.toLowerCase().includes(term);
-        const matchesHunt = (char.huntsInterest || []).some((h) => h.toLowerCase().includes(term));
+        const matchesName = (char.characterName || '').toLowerCase().includes(term);
+        const matchesHunt = (char.huntsInterest || []).some((h) => getHuntName(h).toLowerCase().includes(term));
         const matchesNotes = (char.bestiaryStatus || '').toLowerCase().includes(term);
-        const matchesPeriod = (char.availablePeriods || []).some((p) => p.toLowerCase().includes(term));
+        const matchesPeriod = (char.availablePeriods || []).some((p) => String(p).toLowerCase().includes(term));
         if (!matchesName && !matchesHunt && !matchesNotes && !matchesPeriod) return false;
       }
 
