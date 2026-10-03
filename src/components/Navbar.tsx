@@ -123,12 +123,12 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Action Controls & User Zone */}
         <div className="flex items-center gap-1.5 sm:gap-2">
-          {/* Desktop/Tablet Theme Selector */}
+          {/* Theme / Color Combinations Button (Visible on Mobile and Desktop) */}
           <button
             onClick={() => handleAction(onOpenThemeSelector)}
-            className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 bg-slate-900/80 hover:bg-slate-800 border rounded-xl text-xs font-gamer font-semibold text-slate-300 transition cursor-pointer shrink-0"
+            className="flex items-center gap-1 p-1.5 sm:px-2.5 sm:py-1.5 bg-slate-900/90 hover:bg-slate-800 border rounded-xl text-xs font-gamer font-semibold transition cursor-pointer shrink-0"
             style={{
-              borderColor: `${themeConfig.primaryColor}50`,
+              borderColor: `${themeConfig.primaryColor}60`,
             }}
             title="Mudar combinação de cores gamer (10 temas)"
           >
@@ -137,7 +137,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               Cores
             </span>
             <div className="flex -space-x-1 items-center ml-0.5">
-              {themeConfig.previewDots.slice(0, 3).map((dot, i) => (
+              {themeConfig.previewDots.slice(0, 2).map((dot, i) => (
                 <span
                   key={i}
                   className="w-2 h-2 rounded-full border border-slate-900 shadow-sm"
