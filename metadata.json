@@ -1,0 +1,7 @@
+{
+  "name": "ClickHunt",
+  "description": "Aplicativo para jogadores do servidor Kalibra no Tibia formarem PTs de 4 ou 5 integrantes de forma inteligente com cálculo de share de experiência e sugestões automáticas.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+

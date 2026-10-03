@@ -1,0 +1,181 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-gamer: 'Rajdhani', 'Chakra Petch', sans-serif;
+    --font-hud: 'Orbitron', 'Chakra Petch', sans-serif;
+    --font-body: 'Plus Jakarta Sans', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+    --theme-primary: #00f0ff;
+    --theme-secondary: #f43f5e;
+    --theme-glow: rgba(0, 240, 255, 0.4);
+  }
+
+  [data-theme='cyber-cyan'] {
+    --theme-primary: #00f0ff;
+    --theme-secondary: #f43f5e;
+    --theme-glow: rgba(0, 240, 255, 0.4);
+  }
+
+  [data-theme='arcane-void'] {
+    --theme-primary: #c084fc;
+    --theme-secondary: #38bdf8;
+    --theme-glow: rgba(192, 132, 252, 0.4);
+  }
+
+  [data-theme='toxic-emerald'] {
+    --theme-primary: #10b981;
+    --theme-secondary: #06b6d4;
+    --theme-glow: rgba(16, 185, 129, 0.4);
+  }
+
+  [data-theme='bloodlust-ember'] {
+    --theme-primary: #f43f5e;
+    --theme-secondary: #fbbf24;
+    --theme-glow: rgba(244, 63, 94, 0.4);
+  }
+
+  [data-theme='tibia-gold'] {
+    --theme-primary: #f59e0b;
+    --theme-secondary: #06b6d4;
+    --theme-glow: rgba(245, 158, 11, 0.4);
+  }
+
+  [data-theme='neon-synthwave'] {
+    --theme-primary: #ff2a85;
+    --theme-secondary: #ff9f1c;
+    --theme-glow: rgba(255, 42, 133, 0.4);
+  }
+
+  [data-theme='matrix-cyber'] {
+    --theme-primary: #39ff14;
+    --theme-secondary: #00ffff;
+    --theme-glow: rgba(57, 255, 20, 0.4);
+  }
+
+  [data-theme='frost-blizzard'] {
+    --theme-primary: #38bdf8;
+    --theme-secondary: #818cf8;
+    --theme-glow: rgba(56, 189, 248, 0.4);
+  }
+
+  [data-theme='solar-plasma'] {
+    --theme-primary: #f97316;
+    --theme-secondary: #eab308;
+    --theme-glow: rgba(249, 115, 22, 0.4);
+  }
+
+  [data-theme='phantom-stealth'] {
+    --theme-primary: #f8fafc;
+    --theme-secondary: #38bdf8;
+    --theme-glow: rgba(255, 255, 255, 0.35);
+  }
+
+  body {
+    font-family: var(--font-body);
+    background-color: #060911;
+    color: #e2e8f0;
+    min-height: 100vh;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    background-image: 
+      radial-gradient(ellipse 80% 50% at 50% -20%, var(--theme-glow), transparent 70%),
+      radial-gradient(circle at 100% 0%, rgba(6, 182, 212, 0.08), transparent 40%),
+      radial-gradient(circle at 0% 100%, rgba(239, 68, 68, 0.06), transparent 40%),
+      linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+    background-size: 100% 100%, 100% 100%, 100% 100%, 48px 48px, 48px 48px;
+    background-position: 0 0, 0 0, 0 0, -1px -1px, -1px -1px;
+    background-attachment: fixed;
+    -webkit-font-smoothing: antialiased;
+    transition: background-color 0.3s ease;
+  }
+
+  /* Custom dark gaming scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #060911;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #1e293b;
+    border-radius: 2px;
+    border: 1px solid #334155;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--theme-primary);
+  }
+}
+
+.font-gamer {
+  font-family: var(--font-gamer);
+  letter-spacing: 0.02em;
+}
+
+.font-hud {
+  font-family: var(--font-hud);
+  letter-spacing: 0.05em;
+}
+
+.gamer-card-glow {
+  box-shadow: 0 0 20px -5px var(--theme-glow);
+}
+
+
+.font-mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Modern Gamer HUD Panel Styles */
+.hud-panel {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(10, 15, 29, 0.95) 100%);
+  border: 1px solid rgba(51, 65, 85, 0.6);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.7);
+}
+
+.hud-panel-active {
+  background: linear-gradient(135deg, rgba(20, 29, 51, 0.9) 0%, rgba(13, 19, 36, 0.98) 100%);
+  border: 1px solid var(--theme-primary);
+  box-shadow: 0 0 25px -5px var(--theme-glow), 0 10px 30px -10px rgba(0, 0, 0, 0.8);
+}
+
+/* Tactical Gamer Buttons */
+.gamer-btn-primary {
+  font-family: var(--font-gamer);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, var(--theme-primary) 0%, #0284c7 100%);
+  color: #060911;
+  border: 1px solid var(--theme-primary);
+  box-shadow: 0 4px 15px -2px var(--theme-glow);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.gamer-btn-primary:hover {
+  filter: brightness(1.15);
+  box-shadow: 0 6px 20px -2px var(--theme-glow);
+  transform: translateY(-1px);
+}
+.gamer-btn-primary:active {
+  transform: translateY(1px);
+}
+
+.gamer-btn-secondary {
+  font-family: var(--font-gamer);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  background: rgba(15, 23, 42, 0.8);
+  color: #cbd5e1;
+  border: 1px solid rgba(71, 85, 105, 0.6);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.gamer-btn-secondary:hover {
+  background: rgba(30, 41, 59, 0.9);
+  color: #f8fafc;
+  border-color: var(--theme-primary);
+  box-shadow: 0 0 12px var(--theme-glow);
+}

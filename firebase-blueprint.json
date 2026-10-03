@@ -1,0 +1,312 @@
+{
+  "entities": {
+    "Character": {
+      "title": "Character",
+      "description": "Tibia character profile for party matching and experience share calculations.",
+      "type": "object",
+      "properties": {
+        "ownerId": {
+          "type": "string",
+          "description": "Firebase Authentication UID of the owner."
+        },
+        "ownerEmail": {
+          "type": "string",
+          "description": "Google email of the character owner."
+        },
+        "characterName": {
+          "type": "string",
+          "description": "Official Tibia character name.",
+          "minLength": 2,
+          "maxLength": 30
+        },
+        "level": {
+          "type": "number",
+          "description": "Current Tibia character level."
+        },
+        "vocation": {
+          "type": "string",
+          "description": "Tibia vocation.",
+          "enum": ["Knight", "Paladin", "Sorcerer", "Druid", "Monk"]
+        },
+        "world": {
+          "type": "string",
+          "description": "Tibia game world server name.",
+          "maxLength": 32
+        },
+        "minShareLevel": {
+          "type": "number",
+          "description": "Minimum level eligible for experience share (ceil(level * 2 / 3))."
+        },
+        "maxShareLevel": {
+          "type": "number",
+          "description": "Maximum level eligible for experience share (floor(level * 1.5))."
+        },
+        "availablePeriods": {
+          "type": "array",
+          "description": "Time periods available for hunts (Manha, Tarde, Noite, Madrugada)."
+        },
+        "availableDays": {
+          "type": "array",
+          "description": "Days of the week available for hunts."
+        },
+        "huntsInterest": {
+          "type": "array",
+          "description": "Target hunting spawns of interest."
+        },
+        "bestiaryStatus": {
+          "type": "string",
+          "description": "Bestiary and charm hunt priority status with checkbox and observations.",
+          "maxLength": 250
+        },
+        "interestedInProposals": {
+          "type": "boolean",
+          "description": "Whether the character is open to receiving party invitations."
+        },
+        "whatsappNumber": {
+          "type": "string",
+          "description": "WhatsApp contact number for party coordination.",
+          "maxLength": 25
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when character was created."
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when character was last updated."
+        }
+      },
+      "required": [
+        "ownerId",
+        "ownerEmail",
+        "characterName",
+        "level",
+        "vocation",
+        "world",
+        "minShareLevel",
+        "maxShareLevel",
+        "availablePeriods",
+        "availableDays",
+        "huntsInterest",
+        "bestiaryStatus",
+        "interestedInProposals",
+        "whatsappNumber",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "PartyInvite": {
+      "title": "PartyInvite",
+      "description": "Party hunt invitation between players.",
+      "type": "object",
+      "properties": {
+        "fromUserId": {
+          "type": "string",
+          "description": "UID of the player sending the invite."
+        },
+        "fromCharName": {
+          "type": "string",
+          "description": "Character name of the inviter.",
+          "maxLength": 30
+        },
+        "toUserId": {
+          "type": "string",
+          "description": "UID of the targeted player receiving the invite."
+        },
+        "toCharName": {
+          "type": "string",
+          "description": "Target character name.",
+          "maxLength": 30
+        },
+        "huntTarget": {
+          "type": "string",
+          "description": "Proposed hunting spot or objective.",
+          "maxLength": 80
+        },
+        "scheduledTime": {
+          "type": "string",
+          "description": "Proposed hunt date or timeframe.",
+          "maxLength": 60
+        },
+        "message": {
+          "type": "string",
+          "description": "Optional notes or Discord/Voice channel link.",
+          "maxLength": 200
+        },
+        "status": {
+          "type": "string",
+          "description": "Invitation status.",
+          "enum": ["pending", "accepted", "declined", "cancelled"]
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Creation timestamp."
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Update timestamp."
+        }
+      },
+      "required": [
+        "fromUserId",
+        "fromCharName",
+        "toUserId",
+        "toCharName",
+        "huntTarget",
+        "scheduledTime",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Party": {
+      "title": "Party",
+      "description": "Active or recruiting 4-member or 5-member hunting party.",
+      "type": "object",
+      "properties": {
+        "leaderId": {
+          "type": "string",
+          "description": "UID of the party leader."
+        },
+        "leaderCharName": {
+          "type": "string",
+          "description": "Character name of party leader.",
+          "maxLength": 30
+        },
+        "world": {
+          "type": "string",
+          "description": "Tibia world where the party hunts.",
+          "maxLength": 32
+        },
+        "targetSize": {
+          "type": "number",
+          "description": "Total party size: 4 or 5 members."
+        },
+        "huntTarget": {
+          "type": "string",
+          "description": "Primary hunt location.",
+          "maxLength": 80
+        },
+        "scheduledTime": {
+          "type": "string",
+          "description": "Planned schedule.",
+          "maxLength": 60
+        },
+        "status": {
+          "type": "string",
+          "description": "Party status.",
+          "enum": ["recruiting", "full", "hunting", "completed"]
+        },
+        "minPartyLevel": {
+          "type": "number",
+          "description": "Lowest level in the party."
+        },
+        "maxPartyLevel": {
+          "type": "number",
+          "description": "Highest level in the party."
+        },
+        "isShareActive": {
+          "type": "boolean",
+          "description": "Whether current party levels allow experience share."
+        },
+        "members": {
+          "type": "array",
+          "description": "List of current party members and filled vocation slots."
+        },
+        "notes": {
+          "type": "string",
+          "description": "Hunt strategy, loot split method, and details.",
+          "maxLength": 250
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Creation timestamp."
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Update timestamp."
+        }
+      },
+      "required": [
+        "leaderId",
+        "leaderCharName",
+        "world",
+        "targetSize",
+        "huntTarget",
+        "scheduledTime",
+        "status",
+        "minPartyLevel",
+        "maxPartyLevel",
+        "isShareActive",
+        "members",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "OrganizedParty": {
+      "title": "OrganizedParty",
+      "description": "A record of a party that has successfully organized and filled its slots.",
+      "type": "object",
+      "properties": {
+        "partyId": {
+          "type": "string",
+          "description": "ID of the original party."
+        },
+        "leaderCharName": {
+          "type": "string",
+          "description": "Character name of the party leader.",
+          "maxLength": 30
+        },
+        "huntTarget": {
+          "type": "string",
+          "description": "Hunting spot or objective.",
+          "maxLength": 80
+        },
+        "scheduledTime": {
+          "type": "string",
+          "description": "Proposed hunt date or timeframe.",
+          "maxLength": 60
+        },
+        "targetSize": {
+          "type": "number",
+          "description": "Total party size: 4 or 5 members."
+        },
+        "members": {
+          "type": "array",
+          "description": "List of current party members and filled vocation slots."
+        },
+        "organizedAt": {
+          "type": "string",
+          "description": "Timestamp when the party successfully organized."
+        }
+      },
+      "required": [
+        "partyId",
+        "leaderCharName",
+        "huntTarget",
+        "scheduledTime",
+        "targetSize",
+        "members",
+        "organizedAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/characters/{characterId}": {
+      "schema": "Character",
+      "description": "Public character profiles registered by players for party matchmaking."
+    },
+    "/invites/{inviteId}": {
+      "schema": "PartyInvite",
+      "description": "Direct hunt invitations between players."
+    },
+    "/parties/{partyId}": {
+      "schema": "Party",
+      "description": "Parties forming or organized for hunts."
+    },
+    "/organized_parties/{organizedId}": {
+      "schema": "OrganizedParty",
+      "description": "Audit trail of successfully organized parties."
+    }
+  }
+}

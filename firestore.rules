@@ -1,0 +1,193 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global Safety Net - Default Deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Common Hardened Helper Functions
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null && request.auth.uid != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && request.auth.token.email == 'ederinevitavel@gmail.com';
+    }
+
+    function isValidVocation(v) {
+      return v == 'Knight' || v == 'Paladin' || v == 'Sorcerer' || v == 'Druid' || v == 'Monk';
+    }
+
+    // Character Blueprint Validator
+    function isValidCharacter(data) {
+      return data.keys().hasAll([
+        'ownerId', 'ownerEmail', 'characterName', 'level', 'vocation', 'world',
+        'minShareLevel', 'maxShareLevel', 'availablePeriods', 'availableDays',
+        'huntsInterest', 'bestiaryStatus', 'interestedInProposals', 'whatsappNumber',
+        'createdAt', 'updatedAt'
+      ]) &&
+      data.keys().hasOnly([
+        'ownerId', 'ownerEmail', 'characterName', 'level', 'vocation', 'world',
+        'minShareLevel', 'maxShareLevel', 'availablePeriods', 'availableDays',
+        'huntsInterest', 'bestiaryStatus', 'interestedInProposals', 'whatsappNumber',
+        'createdAt', 'updatedAt'
+      ]) &&
+      data.ownerId is string && data.ownerId.size() <= 128 &&
+      data.ownerEmail is string && data.ownerEmail.size() <= 120 &&
+      data.characterName is string && data.characterName.size() >= 2 && data.characterName.size() <= 30 &&
+      data.level is number && data.level >= 1 && data.level <= 3000 &&
+      isValidVocation(data.vocation) &&
+      data.world is string && data.world.size() >= 2 && data.world.size() <= 32 &&
+      data.minShareLevel is number && data.minShareLevel >= 1 &&
+      data.maxShareLevel is number && data.maxShareLevel >= data.minShareLevel &&
+      data.availablePeriods is list && data.availablePeriods.size() <= 10 &&
+      data.availableDays is list && data.availableDays.size() <= 7 &&
+      data.huntsInterest is list && data.huntsInterest.size() <= 20 &&
+      data.bestiaryStatus is string && data.bestiaryStatus.size() <= 250 &&
+      data.interestedInProposals is bool &&
+      data.whatsappNumber is string && data.whatsappNumber.size() <= 25 &&
+      data.createdAt is string && data.createdAt.size() <= 50 &&
+      data.updatedAt is string && data.updatedAt.size() <= 50;
+    }
+
+    // Party Invite Blueprint Validator
+    function isValidInvite(data) {
+      return data.keys().hasAll([
+        'fromUserId', 'fromCharName', 'toUserId', 'toCharName',
+        'huntTarget', 'scheduledTime', 'status', 'createdAt', 'updatedAt'
+      ]) &&
+      data.keys().hasOnly([
+        'fromUserId', 'fromCharName', 'toUserId', 'toCharName',
+        'huntTarget', 'scheduledTime', 'message', 'status', 'createdAt', 'updatedAt'
+      ]) &&
+      data.fromUserId is string && data.fromUserId.size() <= 128 &&
+      data.fromCharName is string && data.fromCharName.size() >= 2 && data.fromCharName.size() <= 30 &&
+      data.toUserId is string && data.toUserId.size() <= 128 &&
+      data.toCharName is string && data.toCharName.size() >= 2 && data.toCharName.size() <= 30 &&
+      data.huntTarget is string && data.huntTarget.size() >= 1 && data.huntTarget.size() <= 80 &&
+      data.scheduledTime is string && data.scheduledTime.size() <= 60 &&
+      (!('message' in data) || (data.message is string && data.message.size() <= 200)) &&
+      (data.status == 'pending' || data.status == 'accepted' || data.status == 'declined' || data.status == 'cancelled') &&
+      data.createdAt is string && data.createdAt.size() <= 50 &&
+      data.updatedAt is string && data.updatedAt.size() <= 50;
+    }
+
+    // Party Blueprint Validator
+    function isValidParty(data) {
+      return data.keys().hasAll([
+        'leaderId', 'leaderCharName', 'world', 'targetSize',
+        'huntTarget', 'scheduledTime', 'status', 'minPartyLevel',
+        'maxPartyLevel', 'isShareActive', 'members', 'createdAt', 'updatedAt'
+      ]) &&
+      data.keys().hasOnly([
+        'leaderId', 'leaderCharName', 'world', 'targetSize',
+        'huntTarget', 'scheduledTime', 'status', 'minPartyLevel',
+        'maxPartyLevel', 'isShareActive', 'members', 'notes', 'createdAt', 'updatedAt'
+      ]) &&
+      data.leaderId is string && data.leaderId.size() <= 128 &&
+      data.leaderCharName is string && data.leaderCharName.size() >= 2 && data.leaderCharName.size() <= 30 &&
+      data.world is string && data.world.size() >= 2 && data.world.size() <= 32 &&
+      data.targetSize is number && (data.targetSize == 4 || data.targetSize == 5) &&
+      data.huntTarget is string && data.huntTarget.size() >= 1 && data.huntTarget.size() <= 80 &&
+      data.scheduledTime is string && data.scheduledTime.size() <= 60 &&
+      (data.status == 'recruiting' || data.status == 'full' || data.status == 'hunting' || data.status == 'completed') &&
+      data.minPartyLevel is number && data.minPartyLevel >= 1 &&
+      data.maxPartyLevel is number && data.maxPartyLevel >= data.minPartyLevel &&
+      data.isShareActive is bool &&
+      data.members is list && data.members.size() <= 10 &&
+      (!('notes' in data) || (data.notes is string && data.notes.size() <= 250)) &&
+      data.createdAt is string && data.createdAt.size() <= 50 &&
+      data.updatedAt is string && data.updatedAt.size() <= 50;
+    }
+
+    // OrganizedParty Blueprint Validator
+    function isValidOrganizedParty(data) {
+      return data.keys().hasAll([
+        'partyId', 'leaderCharName', 'huntTarget', 'scheduledTime', 'targetSize', 'members', 'organizedAt'
+      ]) &&
+      data.keys().hasOnly([
+        'partyId', 'leaderCharName', 'huntTarget', 'scheduledTime', 'targetSize', 'members', 'organizedAt'
+      ]) &&
+      data.partyId is string && data.partyId.size() <= 128 &&
+      data.leaderCharName is string && data.leaderCharName.size() >= 2 && data.leaderCharName.size() <= 30 &&
+      data.huntTarget is string && data.huntTarget.size() >= 1 && data.huntTarget.size() <= 80 &&
+      data.scheduledTime is string && data.scheduledTime.size() <= 60 &&
+      data.targetSize is number && (data.targetSize == 4 || data.targetSize == 5) &&
+      data.members is list && data.members.size() <= 10 &&
+      data.organizedAt is string && data.organizedAt.size() <= 50;
+    }
+
+    // Match Collection: Characters
+    match /characters/{characterId} {
+      allow get: if isSignedIn() && isValidId(characterId);
+      allow list: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(characterId) &&
+                    isValidCharacter(incoming()) &&
+                    incoming().ownerId == request.auth.uid;
+      allow update: if isSignedIn() && isValidId(characterId) &&
+                    isValidCharacter(incoming()) &&
+                    (isAdmin() || (existing().ownerId == request.auth.uid &&
+                                   incoming().ownerId == existing().ownerId &&
+                                   incoming().createdAt == existing().createdAt));
+      allow delete: if isSignedIn() && isValidId(characterId) &&
+                    (isAdmin() || existing().ownerId == request.auth.uid);
+    }
+
+    // Match Collection: Invites
+    match /invites/{inviteId} {
+      allow get: if isSignedIn() && isValidId(inviteId) &&
+                 (isAdmin() || existing().fromUserId == request.auth.uid || existing().toUserId == request.auth.uid);
+      allow list: if isSignedIn() &&
+                  (isAdmin() || resource.data.fromUserId == request.auth.uid || resource.data.toUserId == request.auth.uid);
+      allow create: if isSignedIn() && isValidId(inviteId) &&
+                    isValidInvite(incoming()) &&
+                    incoming().fromUserId == request.auth.uid;
+      allow update: if isSignedIn() && isValidId(inviteId) &&
+                    isValidInvite(incoming()) &&
+                    (isAdmin() ||
+                     (existing().toUserId == request.auth.uid && incoming().fromUserId == existing().fromUserId && incoming().toUserId == existing().toUserId && incoming().diff(existing()).affectedKeys().hasOnly(['status', 'updatedAt'])) ||
+                     (existing().fromUserId == request.auth.uid && incoming().fromUserId == existing().fromUserId && incoming().toUserId == existing().toUserId && incoming().diff(existing()).affectedKeys().hasOnly(['status', 'updatedAt', 'message'])));
+      allow delete: if isSignedIn() && isValidId(inviteId) &&
+                    (isAdmin() || existing().fromUserId == request.auth.uid || existing().toUserId == request.auth.uid);
+    }
+
+    // Match Collection: Parties
+    match /parties/{partyId} {
+      allow get: if isSignedIn() && isValidId(partyId);
+      allow list: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(partyId) &&
+                    isValidParty(incoming()) &&
+                    incoming().leaderId == request.auth.uid;
+      allow update: if isSignedIn() && isValidId(partyId) &&
+                    isValidParty(incoming()) &&
+                    (isAdmin() ||
+                     (existing().leaderId == request.auth.uid && incoming().leaderId == existing().leaderId) ||
+                     incoming().diff(existing()).affectedKeys().hasOnly(['members', 'status', 'minPartyLevel', 'maxPartyLevel', 'isShareActive', 'updatedAt']));
+      allow delete: if isSignedIn() && isValidId(partyId) &&
+                    (isAdmin() || existing().leaderId == request.auth.uid);
+    }
+
+    // Match Collection: Organized Parties
+    match /organized_parties/{organizedId} {
+      allow get: if isSignedIn() && isValidId(organizedId) && isAdmin();
+      allow list: if isSignedIn() && isAdmin();
+      allow create: if isSignedIn() && isValidId(organizedId) && isValidOrganizedParty(incoming());
+      allow update: if isSignedIn() && isValidId(organizedId) && isAdmin();
+      allow delete: if isSignedIn() && isValidId(organizedId) && isAdmin();
+    }
+  }
+}
